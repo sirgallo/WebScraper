@@ -1,3 +1,5 @@
+const path = require('path')
+
 import { promisify }from 'util'
 import { writeFile, existsSync } from 'fs'
 
@@ -12,14 +14,14 @@ export class FileOpProvider {
   private log = new LogProvider('File Op Provider')
   constructor(private opts?: any) {}
 
-  async exists(path: string): Promise<boolean> {
-    return await asyncExists(path) as boolean
+  async exists(pathForFile: string): Promise<boolean> {
+    return await asyncExists(pathForFile) as boolean
   }
 
-  async writeFile(jsonLoad: any, path?: string): Promise<boolean> {
+  async writeFile(jsonLoad: any, pathForFile?: string): Promise<boolean> {
     const jsonString = JSON.stringify(jsonLoad)
     const filename = `${randomUUID({disableEntropyCache : true})}.${new Date().toISOString()}.dump.json`
-    const fullPath =  path ? `${path}/${filename}` : `${process.cwd()}/${filename}`
+    const fullPath =  pathForFile ? path.normalize(`${pathForFile}/${filename}`) : path.normalize(`${process.cwd()}/${filename}`)
     try {
       this.log.info(`Attempting to write json payload to this path: ${fullPath}`)
       await asyncWriteFile(fullPath, jsonString)
