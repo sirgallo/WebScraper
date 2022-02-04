@@ -14,5 +14,5 @@ export interface ITimerMap {
 }
 
 export function elapsedTimeInMsFunction(start: Date, stop: Date): number {
-  return stop.getMilliseconds() - start.getMilliseconds()
+  return stop.getTime() - start.getTime()
 }

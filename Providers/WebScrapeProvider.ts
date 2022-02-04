@@ -76,6 +76,7 @@ export class WebScrapeProvider {
       )
       this.log.newLine()
       this.log.timer(this.timer.timerMap['webScrape'].elapsedInMs)
+      this.log.newLine()
 
       return true
     } catch (err) {
@@ -90,6 +91,7 @@ export class WebScrapeProvider {
       )
 
       this.log.timer(this.timer.timerMap['webScrape'].elapsedInMs )
+      this.log.newLine()
     }
   }
 
@@ -177,13 +179,12 @@ export class WebScrapeProvider {
   private async scrapePage(_browser: IBrowser, url: string, selectors: ISelector[], removeNewLines: boolean): Promise<IInnerHtml[]> {
     try {
       await _browser.page.goto(url)
-      const elements: IInnerHtml[] = await _browser.page.evaluate( obj => {
+      const elements: IInnerHtml[] = await _browser.page.evaluate( (obj: { selectors: any, removeNewLines: boolean })=> {
         const validateSelector = (selector: ISelector): string => selector.type === 'class' ? `.${selector.text}` : `#${selector.text}`
         const formatString = (item: any, removeWhiteLines: boolean) => { 
-          let formattedStr = item.textContent?.trimStart().trimEnd()
-          if(removeWhiteLines) formattedStr.replace(/\\n\s{1,}/, '')
-          
-          return formattedStr
+          const regex = new RegExp(/(\s{2,})/ig)
+          const formattedStr: string = item.textContent?.trimStart().trimEnd()
+          return removeWhiteLines ? formattedStr.replaceAll(regex, '') : formattedStr
         }
 
         const res = []
@@ -191,21 +192,19 @@ export class WebScrapeProvider {
         for (const selector of obj.selectors) {
           const elem = document.querySelectorAll(validateSelector(selector))
           elem.forEach( item => {
-            const formattedStr = formatString(item, obj.removeNewLines)
+            formatString(item, obj.removeNewLines)
             res.push({
-              elementText: formattedStr
+              elementText: formatString(item, obj.removeNewLines)
             })
           })
         }
 
         return res
-      },  { selectors, removeNewLines } as any)
+      },  { selectors , removeNewLines } as { selectors: any, removeNewLines: boolean })
 
       return elements
     } catch (err) { throw err }
   }
-
-  private
 }
 
 export async function dynamicWebScrapeProvider(

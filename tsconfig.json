@@ -9,12 +9,12 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
-    "target": "ES2018",
+    "target": "ES2021",
     "typeRoots": [
       "node_modules/@types"
     ],
     "lib": [
-      "ES2018",
+      "ES2021",
       "dom"
     ],
     "baseUrl": "./"
