@@ -1,5 +1,5 @@
 # WebScraper
-## Uses Puppeteer
+## Uses Node.js and Puppeteer
 
 Make sure `node --lts` is installed on your machine. You can use either `nvm` or `n` to install.
 
@@ -24,3 +24,8 @@ In *.env*
   PUPPETEERVERSION=puppeteer | puppeteer-core
   BROWSEREXECPATH=<path-to-chrome-executable>
 ```
+
+In *./Configs/webScrapeConfigs.ts*
+
+  - modify with your required fields
+  - rebuild project
