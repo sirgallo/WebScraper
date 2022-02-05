@@ -33,4 +33,5 @@ In `./Configs/webScrapeConfigs.ts`
   - modify with your required fields
   - rebuild project
 
-Windows requires `puppeteer-core` to run, so this needs to be specified. Puppeteer requires a path to an executable chrome browser.
+This is a **Universal Application**:
+  - Windows requires `puppeteer-core` to run, so this needs to be specified. Puppeteer requires a path to an executable chrome browser.
