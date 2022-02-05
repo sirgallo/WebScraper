@@ -20,8 +20,8 @@ export class FileOpProvider {
 
   async writeFile(jsonLoad: any, pathForFile?: string): Promise<boolean> {
     const jsonString = JSON.stringify(jsonLoad)
-    const filename = `${randomUUID({disableEntropyCache : true})}.${new Date().toISOString()}.dump.json`
-    const fullPath =  pathForFile ? path.normalize(`${pathForFile}/${filename}`) : path.normalize(`${process.cwd()}/${filename}`)
+    const filename = `${randomUUID({ disableEntropyCache: true })}.dump.json`
+    const fullPath =  pathForFile ? path.normalize(path.join(pathForFile, filename)) : path.normalize(path.join(process.cwd(), filename))
     try {
       this.log.info(`Attempting to write json payload to this path: ${fullPath}`)
       await asyncWriteFile(fullPath, jsonString)

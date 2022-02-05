@@ -18,14 +18,17 @@ run:
   node ./dist/App.js
 ```
 
-In *.env*
+In `.env`
 
 ```bash
   PUPPETEERVERSION=puppeteer | puppeteer-core
   BROWSEREXECPATH=<path-to-chrome-executable>
+  FILEPATH=<path-to-write-output-to>
 ```
 
-In *./Configs/webScrapeConfigs.ts*
+`FILEPATH` and `BROWSEREXECPATH` are optional
+
+In `./Configs/webScrapeConfigs.ts`
 
   - modify with your required fields
   - rebuild project

@@ -65,7 +65,7 @@ export class WebScrapeProvider {
       )
 
       this.log.newLine()
-      await this.fileOp.writeFile(allResults)
+      await this.fileOp.writeFile(allResults, process.env.FILEPATH)
 
       this.log.newLine()
       this.log.debug(
