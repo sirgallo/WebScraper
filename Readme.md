@@ -15,7 +15,7 @@ build:
 
 run:
 ```bash
-  node ./dist/App.js
+  npm run start
 ```
 
 In `.env`
