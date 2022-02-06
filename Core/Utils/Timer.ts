@@ -13,6 +13,6 @@ export interface ITimerMap {
   timerMap: TimerMap<Record<string, IIndividualTimerMap>>
 }
 
-export function elapsedTimeInMsFunction(start: Date, stop: Date): number {
+export function elapsedTimeInMs(start: Date, stop: Date): number {
   return stop.getTime() - start.getTime()
 }

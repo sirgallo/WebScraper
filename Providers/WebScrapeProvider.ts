@@ -9,7 +9,7 @@ import {
 } from '../Models/IWebScraper'
 
 import { LogProvider } from '../Core/Providers/LogProvider'
-import { ITimerMap, elapsedTimeInMsFunction } from '../Core/Utils/Timer'
+import { ITimerMap, elapsedTimeInMs } from '../Core/Utils/Timer'
 import { FileOpProvider } from '../Core/Providers/FileOpProvider'
 
 config({ path: '.env' })
@@ -59,7 +59,7 @@ export class WebScrapeProvider {
       _browser.browser.close()
       
       this.timer.timerMap['webScrape'].stop = new Date()
-      this.timer.timerMap['webScrape'].elapsedInMs = elapsedTimeInMsFunction(
+      this.timer.timerMap['webScrape'].elapsedInMs = elapsedTimeInMs(
         this.timer.timerMap['webScrape'].start,
         this.timer.timerMap['webScrape'].stop
       )
@@ -85,7 +85,7 @@ export class WebScrapeProvider {
       this.log.newLine()
       this.timer.timerMap['webScrape'].stop = new Date()
 
-      this.timer.timerMap['webScrape'].elapsedInMs = elapsedTimeInMsFunction(
+      this.timer.timerMap['webScrape'].elapsedInMs = elapsedTimeInMs(
         this.timer.timerMap['webScrape'].start,
         this.timer.timerMap['webScrape'].stop
       )
