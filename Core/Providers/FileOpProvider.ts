@@ -1,8 +1,7 @@
 const path = require('path')
 
-import { promisify }from 'util'
+import { promisify } from 'util'
 import { writeFile, existsSync } from 'fs'
-
 import { randomUUID } from 'crypto'
 
 import { LogProvider } from './LogProvider'
@@ -14,8 +13,8 @@ export class FileOpProvider {
   private log = new LogProvider('File Op Provider')
   constructor(private opts?: any) {}
 
-  async exists(pathForFile: string): Promise<boolean> {
-    return await asyncExists(pathForFile) as boolean
+  exists(pathForFile: string): boolean {
+    return existsSync(pathForFile)
   }
 
   async writeFile(jsonLoad: any, pathForFile?: string): Promise<boolean> {
