@@ -40,8 +40,7 @@ export class WebScrapeProvider {
     this.timer.timerMap['webScrape'].start = new Date()
     this.log.info('Starting new timer...')
 
-    if (filePath && ! this.fileOp.exists(filePath)) 
-      throw new Error(`${filePath} does not exist...`)
+    if (filePath && ! this.fileOp.exists(filePath)) throw new Error(`${filePath} does not exist...`)
     
     try {
       const _browser: IBrowser = process.env.PUPPETEERVERSION === 'puppeteer' ? await this.runHeadlessUnix() : await this.runHeadlessUniversal()
