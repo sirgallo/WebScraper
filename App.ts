@@ -17,7 +17,7 @@ export async function webScrapeDriver(overRideOpts?: IWebScrapeOpts): Promise<bo
   }
   try {
     const imports = await dynamicImportByPlatformLoader(platformImports)
-    await new WebScrapeProvider(imports, configs).runMultiUrl()
+    await new WebScrapeProvider(overRideOpts ? overRideOpts : imports, configs).runMultiUrl()
 
     return true
   } catch (err) {
