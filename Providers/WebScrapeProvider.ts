@@ -135,6 +135,7 @@ export class WebScrapeProvider {
     
     let pageNext = true
     let page = 1
+    
     try {
       this.log.info(`Navigating to base url...${config.url}`)
       await _browser.page.goto(config.url)
