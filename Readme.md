@@ -57,11 +57,19 @@ Import into project:
 ```
 
 ```typescript
-  import { webScrapeDriver } from 'webscraperts'
-
   webScrapeDriver()
     .then(res => console.log(res))
     .catch(err => console.log(err))
+```
+
+or 
+
+```typescript
+const opts = { ... }
+
+webScrapeDriver(opts)
+  .then(res => console.log(res))
+  .catch(err => console.log(err))
 ```
 
 This is a **Universal Application**:
