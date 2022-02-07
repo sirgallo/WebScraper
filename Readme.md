@@ -50,5 +50,19 @@ Configuration should have following structure:
 }
 ```
 
+Import into project:
+
+```bash
+  npm install webscraperts
+```
+
+```typescript
+  import { webScrapeDriver } from 'webscraperts'
+
+  webScrapeDriver()
+    .then(res => console.log(res))
+    .catch(err => console.log(err))
+```
+
 This is a **Universal Application**:
   - The Web Scraper will automatically identify the platform and adjust imports accordingly. Windows requires `puppeteer-core` to run, but it is better to bundle `puppeteer` when possible since it contains a full version of chrome
