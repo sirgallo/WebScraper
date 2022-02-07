@@ -5,7 +5,8 @@ import {
   IReturnHtml,
   IBrowser,
   IInnerHtml,
-  ISelector
+  ISelector,
+  IWebScrapeOpts
 } from '../Models/IWebScraper'
 
 import { LogProvider } from '../Core/Providers/LogProvider'
@@ -14,7 +15,7 @@ import { FileOpProvider } from '../Core/Providers/FileOpProvider'
 
 config({ path: '.env' })
 
-class WebScrapeProvider {
+export class WebScrapeProvider {
   private log = new LogProvider('Web Scrape Provider')
   private fileOp = new FileOpProvider()
   private timer: ITimerMap = {
@@ -28,7 +29,7 @@ class WebScrapeProvider {
     }
   }
 
-  constructor(private puppeteer: any, private configs: IWebScrape[], private headless: boolean = true) {}
+  constructor(private imports: any, private configs: IWebScrapeOpts, private headless: boolean = true) {}
 
   getConfigs() {
     return this.configs
@@ -43,10 +44,9 @@ class WebScrapeProvider {
     if (filePath && ! this.fileOp.exists(filePath)) throw new Error(`${filePath} does not exist...`)
     
     try {
-      const _browser: IBrowser = await this.runHeadless(process.env.PUPPETEERVERSION)
-      this.log.info(`Initialized Browser and Page of type ${process.env.PUPPETEERVERSION}`)
+      const _browser: IBrowser = await this.runHeadless()
 
-      for (const config of this.configs) {
+      for (const config of this.configs.options) {
         if (config.paginateOpts) allResults.push(await this.headlessPaginate(_browser, config))
         else allResults.push(await this.headlessSingle(_browser, config))
 
@@ -64,7 +64,7 @@ class WebScrapeProvider {
       )
 
       this.log.newLine()
-      await this.fileOp.writeFile(allResults, process.env.FILEPATH)
+      await this.fileOp.writeFile(allResults, this.configs.filepath)
 
       this.log.newLine()
       this.log.debug(
@@ -94,13 +94,17 @@ class WebScrapeProvider {
     }
   }
 
-  private async runHeadless(version: string = 'puppeteer'): Promise<IBrowser> {
-    const browser = await this.puppeteer.launch({
-      ...(version === 'puppeteer-core' ? { executablePath: process.env.BROWSEREXECPATH } : {}),
+  private async runHeadless(): Promise<IBrowser> {
+    const isPuppeteerCore = this.imports.hasOwnProperty('puppeteer-core')
+    const puppeteer =  isPuppeteerCore ? this.imports['puppeteer-core'] : this.imports['puppeteer']
+    const browser = await puppeteer.launch({
+      ...( isPuppeteerCore ? { executablePath: this.configs.browserExecPath } : {}),
       args: ['--no-sandbox', '--disable-setuid-sandbox'], 
       headless: this.headless
     })
     const page = await browser.newPage()
+
+    this.log.info('Initialized Browser and Page')
 
     return { browser, page }
   }
@@ -140,7 +144,7 @@ class WebScrapeProvider {
       this.log.info(`Navigating to base url...${config.url}`)
       await _browser.page.goto(config.url)
       this.log.info('Beginning pagination...')
-      while (config.paginateOpts.endPage? config.paginateOpts.endPage >= page : pageNext) {
+      while (config.paginateOpts.endPage ? config.paginateOpts.endPage >= page : pageNext) {
         const formattedPath = config.paginateOpts.paginateFunc(config.url, page, config.paginateOpts.perPage)
 
         this.log.debug(`Attempting page ${page}...`)
@@ -158,7 +162,7 @@ class WebScrapeProvider {
         ++page
       }
     } catch (err) {
-      this.log.error(`Could be end? ${err}`)
+      this.log.error(err)
       pageNext = false
       resp.errorStack.push({ err })
     }
@@ -169,7 +173,7 @@ class WebScrapeProvider {
   private async scrapePage(_browser: IBrowser, url: string, selectors: ISelector[], removeNewLines: boolean): Promise<IInnerHtml[]> {
     try {
       await _browser.page.goto(url)
-      const elements: IInnerHtml[] = await _browser.page.evaluate( (obj: { selectors: any, removeNewLines: boolean })=> {
+      const elements: IInnerHtml[] = await _browser.page.evaluate( (obj: { selectors: any, removeNewLines: boolean }) => {
         const validateSelector = (selector: ISelector): string => selector.type === 'class' ? `.${selector.text}` : `#${selector.text}`
         const formatString = (item: any, removeWhiteLines: boolean) => { 
           const regex = new RegExp(/(\s{2,})/ig)
@@ -194,29 +198,5 @@ class WebScrapeProvider {
 
       return elements
     } catch (err) { throw err }
-  }
-}
-
-export async function dynamicWebScrapeProvider(
-  configs: IWebScrape[], 
-  headless?: boolean,
-): Promise<boolean> {
-  const log = new LogProvider('Dynamic Loader')
-  
-  try {
-    if (process.env.PUPPETEERVERSION) {
-      log.debug(`Attempting to load puppeteer version: ${process.env.PUPPETEERVERSION}`)
-      const puppeteer = await require(process.env.PUPPETEERVERSION)
-      log.debug('Loaded import.')
-      log.newLine()
-      
-      return await new WebScrapeProvider(puppeteer, configs, headless).runMultiUrl()
-    } else {
-      log.error('No import defined in .env')
-      process.exit(1)
-    }
-  } catch (err) {
-    log.error(err)
-    throw err
   }
 }

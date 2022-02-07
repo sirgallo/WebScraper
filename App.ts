@@ -1,15 +1,25 @@
 import { configs } from './Configs/webScrapeConfigs'
-import { dynamicWebScrapeProvider } from './Providers/WebScrapeProvider'
+import { WebScrapeProvider } from './Providers/WebScrapeProvider'
 
 import { LogProvider } from './Core/Providers/LogProvider'
+import { dynamicImportByPlatformLoader } from './Core/Utils/DynamicImportLoader'
 
 const log = new LogProvider('Web Scrape Driver')
 
 log.debug('Initializing App...')
 log.newLine()
 
-dynamicWebScrapeProvider(configs)
-  .then(res => {
-    log.boolean(res)
-    process.exit(0)
-  }).catch(err => console.log(err))
+const platformImports = {
+  windows: [ 'puppeteer-core' ],
+  unix: [ 'puppeteer' ]
+}
+
+dynamicImportByPlatformLoader(platformImports)
+  .then(imports => {
+    new WebScrapeProvider(imports, configs)
+      .runMultiUrl()
+      .then(res => {
+        log.boolean(res)
+        process.exit(0)
+      })
+  }).catch(err => log.error(err))

@@ -2,6 +2,12 @@ import { Page, Browser } from 'puppeteer'
 
 export type UnParsedString = string
 
+export interface IWebScrapeOpts {
+  options: IWebScrape[]
+  filepath?: string
+  browserExecPath?: string
+}
+
 export interface IWebScrape {
   url: string
   selectors: ISelector[]
