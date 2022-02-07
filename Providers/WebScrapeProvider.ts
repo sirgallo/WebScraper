@@ -14,7 +14,7 @@ import { FileOpProvider } from '../Core/Providers/FileOpProvider'
 
 config({ path: '.env' })
 
-export class WebScrapeProvider {
+class WebScrapeProvider {
   private log = new LogProvider('Web Scrape Provider')
   private fileOp = new FileOpProvider()
   private timer: ITimerMap = {
@@ -201,8 +201,22 @@ export async function dynamicWebScrapeProvider(
   configs: IWebScrape[], 
   headless?: boolean,
 ): Promise<boolean> {
-  if (process.env.PUPPETEERVERSION) {
-    const puppeteer = await require(process.env.PUPPETEERVERSION)
-    return await new WebScrapeProvider(puppeteer, configs, headless).runMultiUrl()
+  const log = new LogProvider('Dynamic Loader')
+  
+  try {
+    if (process.env.PUPPETEERVERSION) {
+      log.debug(`Attempting to load puppeteer version: ${process.env.PUPPETEERVERSION}`)
+      const puppeteer = await require(process.env.PUPPETEERVERSION)
+      log.debug('Loaded import.')
+      log.newLine()
+      
+      return await new WebScrapeProvider(puppeteer, configs, headless).runMultiUrl()
+    } else {
+      log.error('No import defined in .env')
+      process.exit(1)
+    }
+  } catch (err) {
+    log.error(err)
+    throw err
   }
 }

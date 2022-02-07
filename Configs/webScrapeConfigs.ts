@@ -5,6 +5,7 @@ import { IWebScrape } from '../Models/IWebScraper'
 */
 
 export const configs: IWebScrape[] = [
+  /*
   {
     url: 'https://www.anandtech.com',
     selectors: [
@@ -22,7 +23,7 @@ export const configs: IWebScrape[] = [
     },
     removeNewLines: true
   }
-  /*
+  */
   {
     url: 'https://www.astm.org',
     selectors: [
@@ -36,7 +37,7 @@ export const configs: IWebScrape[] = [
         return `${baseurl}/catalogsearch/result/index/?p=${page}&q=standards` 
       },
       startPage: 1
-    }
+    },
+    removeNewLines: true
   }
-  */
 ]
