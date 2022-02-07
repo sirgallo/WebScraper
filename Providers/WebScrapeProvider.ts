@@ -11,7 +11,6 @@ import {
 import { LogProvider } from '../Core/Providers/LogProvider'
 import { ITimerMap, elapsedTimeInMs } from '../Core/Utils/Timer'
 import { FileOpProvider } from '../Core/Providers/FileOpProvider'
-import path from 'path/posix'
 
 config({ path: '.env' })
 
