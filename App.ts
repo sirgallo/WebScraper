@@ -15,6 +15,7 @@ export async function webScrapeDriver(overRideOpts?: IWebScrapeOpts): Promise<bo
     windows: [ 'puppeteer-core' ],
     unix: [ 'puppeteer' ]
   }
+  
   try {
     const imports = await dynamicImportByPlatformLoader(platformImports)
     await new WebScrapeProvider(overRideOpts ? overRideOpts : imports, configs).runMultiUrl()
