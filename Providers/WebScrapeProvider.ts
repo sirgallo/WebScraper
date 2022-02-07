@@ -11,6 +11,7 @@ import {
 import { LogProvider } from '../Core/Providers/LogProvider'
 import { ITimerMap, elapsedTimeInMs } from '../Core/Utils/Timer'
 import { FileOpProvider } from '../Core/Providers/FileOpProvider'
+import path from 'path/posix'
 
 config({ path: '.env' })
 
@@ -43,7 +44,7 @@ export class WebScrapeProvider {
     if (filePath && ! this.fileOp.exists(filePath)) throw new Error(`${filePath} does not exist...`)
     
     try {
-      const _browser: IBrowser = process.env.PUPPETEERVERSION === 'puppeteer' ? await this.runHeadlessUnix() : await this.runHeadlessUniversal()
+      const _browser: IBrowser = await this.runHeadless(process.env.PUPPETEERVERSION)
       this.log.info(`Initialized Browser and Page of type ${process.env.PUPPETEERVERSION}`)
 
       for (const config of this.configs) {
@@ -94,8 +95,9 @@ export class WebScrapeProvider {
     }
   }
 
-  private async runHeadlessUnix(): Promise<IBrowser> {
+  private async runHeadless(version: string): Promise<IBrowser> {
     const browser = await this.puppeteer.launch({
+      ...(version === 'puppeteer-core' ? { executablePath: process.env.BROWSEREXECPATH } : {}),
       args: ['--no-sandbox', '--disable-setuid-sandbox'], 
       headless: this.headless
     })
@@ -103,18 +105,7 @@ export class WebScrapeProvider {
 
     return { browser, page }
   }
-
-  private async runHeadlessUniversal(): Promise<IBrowser> {
-    const browser = await this.puppeteer.launch({
-      executablePath: process.env.BROWSEREXECPATH,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'], 
-      headless: this.headless
-    })
-    const page = await browser.newPage()
-
-    return { browser, page }
-  }
-
+  
   private async headlessSingle(_browser: IBrowser, config: IWebScrape): Promise<IReturnHtml> {
     const resp: IReturnHtml = {
       pages: [],
