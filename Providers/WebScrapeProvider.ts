@@ -178,6 +178,7 @@ export class WebScrapeProvider {
         const formatString = (item: any, removeWhiteLines: boolean) => { 
           const regex = new RegExp(/(\s{2,})/ig)
           const formattedStr: string = item.textContent?.trimStart().trimEnd()
+          
           return removeWhiteLines ? formattedStr.replaceAll(regex, '') : formattedStr
         }
 
