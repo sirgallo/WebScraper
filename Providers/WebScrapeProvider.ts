@@ -95,7 +95,7 @@ export class WebScrapeProvider {
     }
   }
 
-  private async runHeadless(version: string): Promise<IBrowser> {
+  private async runHeadless(version: string = 'puppeteer'): Promise<IBrowser> {
     const browser = await this.puppeteer.launch({
       ...(version === 'puppeteer-core' ? { executablePath: process.env.BROWSEREXECPATH } : {}),
       args: ['--no-sandbox', '--disable-setuid-sandbox'], 
@@ -105,7 +105,7 @@ export class WebScrapeProvider {
 
     return { browser, page }
   }
-  
+
   private async headlessSingle(_browser: IBrowser, config: IWebScrape): Promise<IReturnHtml> {
     const resp: IReturnHtml = {
       pages: [],
