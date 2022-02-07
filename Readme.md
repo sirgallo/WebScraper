@@ -50,11 +50,7 @@ Configuration should have following structure:
 }
 ```
 
-Import into project:
-
-```bash
-  npm install webscraperts
-```
+Use in projects:
 
 ```typescript
   webScrapeDriver()
