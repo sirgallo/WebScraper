@@ -18,20 +18,37 @@ run:
   npm run start
 ```
 
-In `.env`
-
-```bash
-  PUPPETEERVERSION=puppeteer | puppeteer-core
-  BROWSEREXECPATH=<path-to-chrome-executable>
-  FILEPATH=<path-to-write-output-to>
-```
-
-`FILEPATH` and `BROWSEREXECPATH` are optional
-
 In `./Configs/webScrapeConfigs.ts`
 
   - modify with your required fields
   - rebuild project
 
+Configuration should have following structure:
+
+```typescript
+{
+  options: [
+    {
+      url: string
+      selectors: [
+        {
+          text: string
+          type: 'class' | 'element'
+        }
+      ]
+      paginateOpts?: {
+        paginateFunc(baseUrl: string, page: number, perPage?: number): string
+        perPage?: number
+        startPage?: number
+        endPage?: number
+      }
+      removeNewLines?: boolean
+    }
+  ]
+  filepath?: string
+  browserExecPath?: string
+}
+```
+
 This is a **Universal Application**:
-  - Windows requires `puppeteer-core` to run, so this needs to be specified. Puppeteer requires a path to an executable chrome browser.
+  - The Web Scraper will automatically identify the platform and adjust imports accordingly. Windows requires `puppeteer-core` to run, but it is better to bundle `puppeteer` when possible since it contains a full version of chrome
