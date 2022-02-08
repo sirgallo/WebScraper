@@ -2,11 +2,13 @@ import { WebScrapeProvider } from './Providers/WebScrapeProvider'
 import { IWebScrapeOpts } from './Models/IWebScraper'
 
 import { LogProvider } from './Core/Providers/LogProvider'
+import { FileOpProvider } from './Core/Providers/FileOpProvider'
 import { dynamicImportByPlatformLoader } from './Core/Utils/DynamicImportLoader'
 
 const log = new LogProvider('Web Scrape Driver')
+const fileOp = new FileOpProvider()
 
-export async function webScrapeDriver(configs: IWebScrapeOpts): Promise<boolean> {
+export async function webScrapeDriver(configs: IWebScrapeOpts): Promise<string> {
   log.debug('Initializing App...')
   log.newLine()
 
@@ -17,10 +19,10 @@ export async function webScrapeDriver(configs: IWebScrapeOpts): Promise<boolean>
 
   try {
     const imports = await dynamicImportByPlatformLoader(platformImports)
-    await new WebScrapeProvider(imports, configs)
+    const fileName = await new WebScrapeProvider(imports, configs)
       .runMultiUrl()
 
-    return true
+    return fileName
   } catch (err) { throw err }
 }
 
@@ -48,9 +50,12 @@ const configs: IWebScrapeOpts = {
 }
 
 webScrapeDriver(configs)
-  .then(res => {
-    log.boolean(res)
-    process.exit(0)
+  .then(fileName => {
+    log.debug(fileName)
+    fileOp.readFile(fileName)
+      .then(jsonResults => {
+        log.debug(JSON.stringify(jsonResults, null, 2))
+      })
   }).catch(err => {
     log.error(err)
     process.exit(1)

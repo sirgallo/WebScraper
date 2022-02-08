@@ -35,7 +35,7 @@ export class WebScrapeProvider {
     return this.configs
   }
 
-  async runMultiUrl(filePath?: string): Promise<boolean> {
+  async runMultiUrl(filePath?: string): Promise<string> {
     const allResults: IReturnHtml[] = []
 
     this.timer.timerMap['webScrape'].start = new Date()
@@ -64,7 +64,7 @@ export class WebScrapeProvider {
       )
 
       this.log.newLine()
-      await this.fileOp.writeFile(allResults, this.configs.filepath)
+      const fileName = await this.fileOp.writeFile(allResults, this.configs.filepath)
 
       this.log.newLine()
       this.log.debug(
@@ -77,7 +77,7 @@ export class WebScrapeProvider {
       this.log.timer(this.timer.timerMap['webScrape'].elapsedInMs)
       this.log.newLine()
 
-      return true
+      return fileName
     } catch (err) {
       this.log.error(err)
 
