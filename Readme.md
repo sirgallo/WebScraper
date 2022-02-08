@@ -3,17 +3,17 @@
 
 Make sure `node --lts` is installed on your machine. You can use either `nvm` or `n` to install.
 
-install node modules:
+Install `node` modules:
 ```bash
   npm install
 ```
 
-build:
+Build:
 ```bash
   npm run build
 ```
 
-run:
+Run:
 ```bash
   npm run start
 ```
@@ -45,23 +45,34 @@ Configuration should have following structure:
 }
 ```
 
-Use in projects:
+Return object:
 
 ```typescript
-  webScrapeDriver()
-    .then(res => console.log(res))
-    .catch(err => console.log(err))
+{
+  pages: [
+    {
+      url: string
+      htmlList: [
+        { elementText: string }
+      ]
+      timeStamp: Date
+    }
+  ],
+  errorStack: []
+}
 ```
 
-or 
+Use in projects:
 
 ```typescript
 const opts = { ... }
 
 webScrapeDriver(opts)
-  .then(res => console.log(res))
-  .catch(err => console.log(err))
+  .then( res => console.log(res))
+  .catch( err => console.log(err))
 ```
 
 This is a **Universal Application**:
   - The Web Scraper will automatically identify the platform and adjust imports accordingly. Windows requires `puppeteer-core` to run, but it is better to bundle `puppeteer` when possible since it contains a full version of chrome
+
+Check `./App.ts` to see a basic implementation of the web scraper.
