@@ -1,3 +1,8 @@
+import { 
+  BASE, STATUSOK,
+  CustomMessageWrap 
+} from '../Models/ILog'
+
 export interface IIndividualTimerMap {
   start: Date
   stop: Date
@@ -15,4 +20,17 @@ export interface ITimerMap {
 
 export function elapsedTimeInMs(start: Date, stop: Date): number {
   return stop.getTime() - start.getTime()
+}
+
+export function customTimerMessage(message: string): CustomMessageWrap {
+  return {
+    1: {
+      text: '[INITIALIZE] =>',
+      color: STATUSOK
+    },
+    2: {
+      text: message,
+      color: BASE
+    }
+  }
 }

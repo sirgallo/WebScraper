@@ -10,7 +10,11 @@ import {
 } from '../Models/IWebScraper'
 
 import { LogProvider } from '../Core/Providers/LogProvider'
-import { ITimerMap, elapsedTimeInMs } from '../Core/Utils/Timer'
+import { 
+  ITimerMap, 
+  elapsedTimeInMs,
+  customTimerMessage
+} from '../Core/Utils/Timer'
 import { FileOpProvider } from '../Core/Providers/FileOpProvider'
 
 config({ path: '.env' })
@@ -39,7 +43,7 @@ export class WebScrapeProvider {
     const allResults: IReturnHtml[] = []
 
     this.timer.timerMap['webScrape'].start = new Date()
-    this.log.info('Starting new timer...')
+    this.log.custom(customTimerMessage('Web Scrape Timer Started.'))
 
     if (filePath && ! this.fileOp.exists(filePath)) throw new Error(`${filePath} does not exist...`)
     
@@ -57,22 +61,9 @@ export class WebScrapeProvider {
       
       _browser.browser.close()
       
-      this.timer.timerMap['webScrape'].stop = new Date()
-      this.timer.timerMap['webScrape'].elapsedInMs = elapsedTimeInMs(
-        this.timer.timerMap['webScrape'].start,
-        this.timer.timerMap['webScrape'].stop
-      )
-
-      this.log.newLine()
       const fileName = await this.fileOp.writeFile(allResults, this.configs.filepath)
 
-      this.log.newLine()
-      this.log.debug(
-        JSON.stringify({ 
-          start: this.timer.timerMap['webScrape'].start, 
-          stop: this.timer.timerMap['webScrape'].stop 
-        }, null, 2)
-      )
+      this.stopTimer()
       this.log.newLine()
       this.log.timer(this.timer.timerMap['webScrape'].elapsedInMs)
       this.log.newLine()
@@ -82,13 +73,7 @@ export class WebScrapeProvider {
       this.log.error(err)
 
       this.log.newLine()
-      this.timer.timerMap['webScrape'].stop = new Date()
-
-      this.timer.timerMap['webScrape'].elapsedInMs = elapsedTimeInMs(
-        this.timer.timerMap['webScrape'].start,
-        this.timer.timerMap['webScrape'].stop
-      )
-
+      this.stopTimer()
       this.log.timer(this.timer.timerMap['webScrape'].elapsedInMs )
       this.log.newLine()
     }
@@ -201,5 +186,14 @@ export class WebScrapeProvider {
 
       return elements
     } catch (err) { throw err }
+  }
+
+  private stopTimer() {
+    this.timer.timerMap['webScrape'].stop = new Date()
+
+    this.timer.timerMap['webScrape'].elapsedInMs = elapsedTimeInMs(
+      this.timer.timerMap['webScrape'].start,
+      this.timer.timerMap['webScrape'].stop
+    )
   }
 }

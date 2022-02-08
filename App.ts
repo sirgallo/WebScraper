@@ -45,18 +45,17 @@ const configs: IWebScrapeOpts = {
       },
       removeNewLines: true
     }
-  ],
-  filepath: '/home/sirgallo/Documents/Projects/WebScraper'
+  ]
 }
 
 webScrapeDriver(configs)
-  .then(fileName => {
+  .then( fileName => {
     log.debug(fileName)
     fileOp.readFile(fileName)
-      .then(jsonResults => {
+      .then( jsonResults => {
         log.debug(JSON.stringify(jsonResults, null, 2))
       })
-  }).catch(err => {
+  }).catch( err => {
     log.error(err)
     process.exit(1)
   })

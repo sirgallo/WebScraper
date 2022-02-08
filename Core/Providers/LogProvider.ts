@@ -31,7 +31,7 @@ export class LogProvider {
   }
 
   success(message: Message) {
-    this.log(BASE(this.formatBaseName(), STATUSOK('SUCCESS'), INFO(message)))
+    this.log(BASE(this.formatBaseName()), INFO(message), STATUSOK('[SUCCESS]'))
   }
 
   timer(elapsedTime: number) {
