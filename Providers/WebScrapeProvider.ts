@@ -184,11 +184,11 @@ export class WebScrapeProvider {
 
         const res = []
 
-        const formattedSelector = obj.selectors.map( selector => {
+        const formattedSelectors: string = obj.selectors.map( selector => {
           return validateSelector(selector)
-        }).join(' ')
+        }).join(', ')
 
-        const elem = document.querySelectorAll(validateSelector(formattedSelector))
+        const elem = document.querySelectorAll(formattedSelectors)
         elem.forEach( item => {
           formatString(item, obj.removeNewLines)
           res.push({
