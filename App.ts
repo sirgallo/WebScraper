@@ -50,10 +50,9 @@ const configs: IWebScrapeOpts = {
 
 webScrapeDriver(configs)
   .then( fileName => {
-    log.debug(fileName)
     fileOp.readFile(fileName)
       .then( jsonResults => {
-        log.debug(JSON.stringify(jsonResults, null, 2))
+        //  log.debug(JSON.stringify(jsonResults, null, 2))
       })
   }).catch( err => {
     log.error(err)
