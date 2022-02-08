@@ -57,7 +57,7 @@ Return object:
       ]
       timeStamp: Date
     }
-  ],
+  ]
   errorStack: []
 }
 ```
