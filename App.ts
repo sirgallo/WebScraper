@@ -1,4 +1,3 @@
-import { configs } from './Configs/webScrapeConfigs'
 import { WebScrapeProvider } from './Providers/WebScrapeProvider'
 import { IWebScrapeOpts } from './Models/IWebScraper'
 
@@ -7,7 +6,7 @@ import { dynamicImportByPlatformLoader } from './Core/Utils/DynamicImportLoader'
 
 const log = new LogProvider('Web Scrape Driver')
 
-export async function webScrapeDriver(overRideOpts?: IWebScrapeOpts): Promise<boolean> {
+export async function webScrapeDriver(configs: IWebScrapeOpts): Promise<boolean> {
   log.debug('Initializing App...')
   log.newLine()
 
@@ -15,18 +14,40 @@ export async function webScrapeDriver(overRideOpts?: IWebScrapeOpts): Promise<bo
     windows: [ 'puppeteer-core' ],
     unix: [ 'puppeteer' ]
   }
-  
+
   try {
     const imports = await dynamicImportByPlatformLoader(platformImports)
-    await new WebScrapeProvider(overRideOpts ? overRideOpts : imports, configs).runMultiUrl()
+    await new WebScrapeProvider(imports, configs)
+      .runMultiUrl()
 
     return true
-  } catch (err) {
-    throw err
-  }
+  } catch (err) { throw err }
 }
 
-webScrapeDriver()
+const configs: IWebScrapeOpts = {
+  options: [
+    {
+      url: 'https://www.anandtech.com',
+      selectors: [
+        {
+          text: 'cont_box1',
+          type: 'class'
+        }
+      ],
+      paginateOpts: {
+        paginateFunc: function(baseurl, page, perPage) { 
+          return `${baseurl}/Page/${page}` 
+        },
+        startPage: 1,
+        endPage: 5
+      },
+      removeNewLines: true
+    }
+  ],
+  filepath: '/home/sirgallo/Documents/Projects/WebScraper'
+}
+
+webScrapeDriver(configs)
   .then(res => {
     log.boolean(res)
     process.exit(0)

@@ -18,11 +18,6 @@ run:
   npm run start
 ```
 
-In `./Configs/webScrapeConfigs.ts`
-
-  - modify with your required fields
-  - rebuild project
-
 Configuration should have following structure:
 
 ```typescript
