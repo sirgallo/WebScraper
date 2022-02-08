@@ -54,7 +54,7 @@ export class WebScrapeProvider {
       }
 
       this.log.newLine()
-      this.log.debug('Closing Browser...')
+      
       _browser.browser.close()
       
       this.timer.timerMap['webScrape'].stop = new Date()
@@ -184,15 +184,17 @@ export class WebScrapeProvider {
 
         const res = []
 
-        for (const selector of obj.selectors) {
-          const elem = document.querySelectorAll(validateSelector(selector))
-          elem.forEach( item => {
-            formatString(item, obj.removeNewLines)
-            res.push({
-              elementText: formatString(item, obj.removeNewLines)
-            })
+        const formattedSelector = obj.selectors.map( selector => {
+          return validateSelector(selector)
+        }).join(' ')
+
+        const elem = document.querySelectorAll(validateSelector(formattedSelector))
+        elem.forEach( item => {
+          formatString(item, obj.removeNewLines)
+          res.push({
+            elementText: formatString(item, obj.removeNewLines)
           })
-        }
+        })
 
         return res
       },  { selectors , removeNewLines } as { selectors: any, removeNewLines: boolean })
