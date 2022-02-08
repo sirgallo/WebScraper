@@ -1,5 +1,4 @@
-# WebScraper
-## Uses Node.js and Puppeteer
+# WebScraperTs
 
 Make sure `node --lts` is installed on your machine. You can use either `nvm` or `n` to install.
 
